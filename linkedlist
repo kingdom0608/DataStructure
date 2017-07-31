@@ -3,7 +3,6 @@
 
 typedef struct node{
     int value;
-    int id;
     struct node* next; //다음 노드를 가리키는 포인터
 }NODE;
 
@@ -15,10 +14,13 @@ void insert_start(NODE* new_node);
 void insert_end(NODE* end, NODE* new_node);
 void insert_mid(NODE* mid, NODE* new_node);
 void delete(void);
+void delete_start(void);
+void delete_end(NODE* pre_del);
+void delete_mid(NODE* pre_del);
 void print(void);
+void free_all(void);
 
-int main()
-{
+int main(){
     int sel;
 
     while(1){
@@ -34,6 +36,7 @@ int main()
 
         switch(sel){
             case 0:
+                free_all();
                 return 0;
             case 1:
                 insert();
@@ -92,12 +95,12 @@ void insert(void){
         }
         else if(sel==3){
             print();
-            printf("where insert next node? Input node id...\n");
+            printf("\nwhere insert next node? Input node id...\n");
             scanf("%d", &id);
 
             //노드 수가 넘었을 때 예외처리 필요
             for(cur=start; cur!=NULL; cur=cur->next){
-                if(cur->id==id){
+                if(cur->value==id){
                     break;
                 }
             }
@@ -110,10 +113,6 @@ void insert(void){
             return 0;
         }
     }
-}
-
-void delete(void){
-
 }
 
 void insert_start(NODE* new_node){
@@ -129,4 +128,99 @@ void insert_mid(NODE* mid, NODE* new_node){
     printf("World");
     new_node->next = mid->next;
     mid->next = new_node;
+}
+
+void delete(void){
+    int sel;
+    int id;
+    NODE* cur;
+
+    if(start==NULL){
+        return 0;
+    }
+    else if(start->next==NULL){
+        free(start);
+        start = NULL;
+        return;
+    }
+    else if(start->next->next == NULL){
+        printf("1. start delete\n");
+        printf("2. end delete\n");
+        printf("================\n");
+        scanf("%d", &sel);
+        //3번 입력이 들어왔을 때에 대한 예외처리가 필요
+    }
+    else{
+        printf("1. start delete\n");
+        printf("2. end delete\n");
+        printf("3. middle delete\n");
+        printf("================\n");
+        scanf("%d", &sel);
+    }
+    if(sel == 1){
+        delete_start();
+    }
+    else if(sel == 2){
+        for(cur=start; cur->next->next!=NULL; cur=cur->next);
+        delete_end(cur);
+    }
+    else if(sel==3){
+        print();
+        printf("\nwhere delete node? Input node id...\n");
+        scanf("%d", &id);
+
+        //노드 수가 넘었을 때 예외처리 필요
+        for(cur=start; cur!=NULL; cur=cur->next){
+            if(cur->next->value==id){
+                break;
+            }
+        }
+
+        printf("Hello");
+        delete_mid(cur);
+    }
+    else{
+        return 0;
+    }
+}
+
+void delete_start(void){
+    NODE* tmp;
+    tmp = start->next; //두 번째 노드의 주소값을 백업
+    free(start);
+    start = tmp;
+}
+
+void delete_end(NODE* pre_del){
+    free(pre_del->next);
+    pre_del->next = NULL;
+}
+
+void delete_mid(NODE* pre_del){
+    NODE* del;
+
+    del = pre_del->next;
+    pre_del->next =  pre_del->next->next;
+    free(del);
+
+}
+
+void free_all(void){
+    NODE* cur;
+    NODE* del = start;
+
+    if(start==NULL){
+        return;
+    }
+    else if(start->next==NULL){
+        free(start);
+    }
+    else{
+        for(cur=start->next; cur!=NULL; cur=cur->next){
+            free(del);
+            del = cur;
+        }
+        free(del);
+    }
+    start = NULL;
 }
