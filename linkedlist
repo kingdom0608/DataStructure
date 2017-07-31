@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node{
+    int value;
+    int id;
+    struct node* next; //다음 노드를 가리키는 포인터
+}NODE;
+
+NODE* start = NULL; //시작 노드를 가리키는 포인터
+int value = 1;
+
+void insert(void);
+void insert_start(NODE* new_node);
+void insert_end(NODE* end, NODE* new_node);
+void insert_mid(NODE* mid, NODE* new_node);
+void delete(void);
+void print(void);
+
+int main()
+{
+    int sel;
+
+    while(1){
+        system("cls");
+        printf("Menu\n");
+        printf("0. end\n");
+        printf("1. insert\n");
+        printf("2. delete\n");
+        printf("3. print\n");
+        printf("================\n");
+
+        scanf("%d", &sel);
+
+        switch(sel){
+            case 0:
+                return 0;
+            case 1:
+                insert();
+                break;
+            case 2:
+                delete();
+                break;
+            case 3:
+                print();
+                break;
+            default:
+                printf("ERROR");
+        }
+    }
+    return 0;
+}
+
+void print(void){
+    NODE* cur = NULL;
+
+    for(cur=start; cur!=NULL; cur=cur->next){
+        printf("%d->", cur->value);
+    }
+    getch();
+}
+
+void insert(void){
+    NODE* cur = NULL; //현재 노드를 가리키는 포인터(커서)
+    NODE* new_node = NULL; //새로 생성된 노드를 가리키는 포인터
+    int sel;
+    int id;
+
+    if(start==NULL){
+        new_node = (NODE*)malloc(sizeof(NODE)); //노드 생성
+        new_node -> next = NULL; //포인터 초기화
+        new_node -> value = value++;
+        start = new_node; //시작지점으로 설정
+    }
+    else{ //cur가 마지막 노드를 가리키게 함
+        printf("1. start insert\n");
+        printf("2. end insert\n");
+        printf("3. middle insert\n");
+        printf("================\n");
+        scanf("%d", &sel);
+
+        new_node = (NODE*)malloc(sizeof(NODE)); //노드 생성
+        new_node -> next = NULL; //포인터 초기화
+        new_node -> value = value++;
+
+        if(sel == 1){
+            insert_start(new_node);
+        }
+        else if(sel == 2){
+            for(cur=start; cur->next != NULL; cur=cur->next);
+            insert_end(cur, new_node);
+        }
+        else if(sel==3){
+            print();
+            printf("where insert next node? Input node id...\n");
+            scanf("%d", &id);
+
+            //노드 수가 넘었을 때 예외처리 필요
+            for(cur=start; cur!=NULL; cur=cur->next){
+                if(cur->id==id){
+                    break;
+                }
+            }
+
+            printf("Hello");
+            insert_mid(cur, new_node);
+        }
+        else{
+            free(new_node); //메모리 해제
+            return 0;
+        }
+    }
+}
+
+void delete(void){
+
+}
+
+void insert_start(NODE* new_node){
+    new_node -> next = start;
+    start = new_node;
+}
+
+void insert_end(NODE* end, NODE* new_node){
+    end -> next = new_node;
+}
+
+void insert_mid(NODE* mid, NODE* new_node){
+    printf("World");
+    new_node->next = mid->next;
+    mid->next = new_node;
+}
