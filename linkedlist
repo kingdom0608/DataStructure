@@ -200,7 +200,7 @@ void delete_mid(NODE* pre_del){
     NODE* del;
 
     del = pre_del->next;
-    pre_del->next =  pre_del->next->next;
+    pre_del->next = del->next;
     free(del);
 
 }
