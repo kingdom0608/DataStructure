@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char str[100];
+int index = -1;
+
+void push(char input){
+    if(index == 99){
+        return;
+    }
+    return str[++index] = input;
+}
+
+char pop(){
+    if(index == -1){
+        printf("empty");
+        return;
+    }
+    return str[index--];
+}
+
+int main()
+{
+    int i;
+    int len;
+
+    printf("Input:");
+    scanf("%s", &str);
+
+    len = strlen(str);
+
+    for(i=0; i<len; i++){
+        push(str[i]);
+    }
+
+    for(i=0; i<len; i++){
+        printf("%c", pop());
+    }
+
+    return 0;
+}
