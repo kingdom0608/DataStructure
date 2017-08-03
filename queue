@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct qnode{
+    char* data;
+    struct qnode* next;
+}NODE;
+
+typedef struct listQueue{
+    int size;
+    NODE* front;
+    NODE* rear;
+}listQueue;
+
+void createQueue(listQueue** Queue){
+    (*Queue) = (listQueue*)malloc(sizeof(listQueue));
+    (*Queue)->front = NULL;
+    (*Queue)->rear = NULL;
+    (*Queue)->size = 0;
+}
+
+
+NODE* createNode(char* data){
+    NODE* new_node = (NODE*)malloc(sizeof(NODE));
+    new_node->data = (char*)malloc(sizeof(strlen(data)+1));
+
+    strcpy(new_node->data, data);
+
+    new_node->next = NULL;
+
+    return new_node;
+}
+
+void deleteNode(NODE* removeNODE){
+    free(removeNODE->data);
+    free(removeNODE);
+}
+
+
+NODE* Peek(listQueue* Queue){
+    return Queue->front;
+}
+
+void Enqueue(listQueue* Queue, NODE* new_node){
+    //empty
+    if(Queue->size == 0){
+        Queue->front = new_node;
+        Queue->rear = new_node;
+    }
+    //no empty
+    else{
+        Queue->rear->next = new_node;
+        Queue->rear = new_node;
+    }
+
+    Queue->size++;
+}
+
+NODE* Dequeue(listQueue* Queue){
+    NODE* tempnode = Queue->front;
+
+    if(Queue->size == 0){
+        printf("\ndon`t call me");
+    }
+    else if(Queue->size == 1){
+        Queue->front = NULL;
+        Queue->rear = NULL;
+        Queue->size--;
+    }
+    else{
+        Queue->front = Queue->front->next;
+        Queue->size--;
+    }
+
+    return tempnode;
+}
+
+void deleteQueue(listQueue* Queue){
+    int count;
+
+    count = Queue->size;
+
+    while(count-- != 0){
+        NODE* temp = Dequeue(Queue);
+        printf("\nDequeued node data %s\n", temp->data);
+        deleteNode(temp);
+    }
+
+    free(Queue);
+}
+
+int main()
+{
+    int i;
+    listQueue* Queue;
+
+    createQueue(&Queue);
+
+    Enqueue(Queue, createNode("a"));
+    Enqueue(Queue, createNode("b"));
+    Enqueue(Queue, createNode("c"));
+    Enqueue(Queue, createNode("d"));
+
+    NODE* temp1 = Peek(Queue);
+
+    printf("%s <--this guy is at front of the queque\n", temp1->data);
+
+    printf("\n--current Queue--[size:%d]\n", Queue->size);
+    printf("front is : [%s]\n", Queue->front->data);
+    printf("rear is : [%s]\n", Queue->rear->data);
+
+    NODE* horse = Queue->front;
+    for(i=0; i<(Queue->size); i++){
+        printf("%s\n", horse->data);
+        horse = horse->next;
+    }
+
+    horse = Dequeue(Queue);
+    horse = Dequeue(Queue);
+
+    printf("\n--current Queue--[size:%d]\n", Queue->size);
+    horse = Queue->front;
+    for(i=0; i<(Queue->size); i++){
+        printf("%s\n", horse->data);
+        horse = horse->next;
+    }
+
+    horse = Dequeue(Queue);
+    horse = Dequeue(Queue);
+
+    deleteQueue(Queue);
+
+    printf("\nend\n");
+
+    return 0;
+}
