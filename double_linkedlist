@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct listnode{
+    int data;
+    struct listnode* next;
+    struct listnode* prev;
+}NODE;
+
+NODE* createNode(int data){
+    NODE* new_node = (NODE*)malloc(sizeof(NODE));
+    new_node->data = data;
+    new_node->next = NULL;
+    new_node->prev = NULL;
+
+    return new_node;
+}
+
+void deleteNode(NODE* NODE){
+    free(NODE);
+}
+
+NODE* getNodeAt(NODE* head, int index){
+    NODE* horse = head;
+    int count = 0;
+
+    while(horse != NULL){
+        if(count++ == index){
+            return horse;
+        }
+        else{
+            horse = horse->next;
+        }
+    }
+    return NULL;
+}
+
+int countNode(NODE* head){
+    int count = 0;
+    NODE* horse = head;
+
+    while(horse != NULL){
+        horse = horse->next;
+        count++;
+    }
+
+    return count;
+}
+
+void addNode(NODE** head, NODE* new_node){
+    if(*head==NULL){
+        *head = new_node;
+    }
+    else{
+        NODE* horse = (*head);
+
+        while(horse->next != NULL){
+            horse = horse->next;
+        }
+
+        horse->next = new_node;
+        new_node->prev = horse;
+    }
+}
+
+void insertAfterNode(NODE* cur, NODE* new_node){
+    //head
+    if(cur->prev == NULL && cur->next == NULL){
+        cur->next = new_node;
+        new_node->prev = cur;
+    }
+        //not head
+        //if tail
+    if(cur->next == NULL){
+        cur->next = new_node;
+        new_node->prev = cur;
+    }
+
+    else{
+        cur->next->prev = new_node;
+        new_node->prev = cur;
+        new_node->next = cur->next;
+        cur->next = new_node;
+    }
+}
+
+void removeNode(NODE** head, NODE* remove){
+    //head
+    if(*head == remove){
+        *head = remove->next;
+    }
+
+    if(remove->next != NULL){
+        remove->next->prev = remove->prev;
+    }
+
+    if(remove->prev != NULL){
+        remove->prev->next = remove->next;
+    }
+
+    deleteNode(remove);
+}
+
+int main()
+{
+    printf("Hello world!\n");
+
+    int i;
+    int count = 0;
+
+    NODE* list = NULL;
+    NODE* cur = NULL;
+    NODE* new_node = NULL;
+
+    for(i=0; i<5; i++){
+        new_node = createNode(i);
+        addNode(&list, new_node);
+    }
+
+    count = countNode(list);
+    for(i=0; i<count; i++){
+        cur = getNodeAt(list, i);
+        printf("list[%d] = %d\n", i, cur->data);
+    }
+
+    printf("===================================================\n");
+
+    new_node = createNode(10);
+    cur = getNodeAt(list, 0);
+    insertAfterNode(cur, new_node);
+
+    new_node = createNode(15);
+    cur = getNodeAt(list, 4);
+    insertAfterNode(cur, new_node);
+
+    count = countNode(list);
+    for(i=0; i<count; i++){
+        cur = getNodeAt(list, i);
+        printf("list[%d] = %d\n", i, cur->data);
+    }
+
+    printf("===================================================\n");
+
+    new_node = getNodeAt(list, 1);
+    removeNode(&list, new_node);
+
+    new_node = getNodeAt(list, 0);
+    removeNode(&list, new_node);
+
+     count = countNode(list);
+    for(i=0; i<count; i++){
+        cur = getNodeAt(list, i);
+        printf("list[%d] = %d\n", i, cur->data);
+    }
+
+    printf("===================================================\n");
+
+    return 0;
+}
